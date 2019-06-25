@@ -18,7 +18,7 @@ __db = None
 
 def __acquire_db_connection(p_db_name):
     """
-
+    Acquire database connection for a database name
     :return:
     """
     if p_db_name == 'workflow_db':
@@ -749,7 +749,8 @@ def process_messages(event, context):
     The following events are supported:
 
     StartWorkflow:
-        Start a workflow process. The workflow manager will start orchestrating micro services.
+        Start a workflow process. The workflow manager will start orchestrating micro services
+        based on a workflow definition.
     TaskCompleted:
         This event is called by the constituent micro service signalling the completion of the task
         When a task is completed, the workflow manager automatically discovers the next set of tasks and schedules them
@@ -767,7 +768,7 @@ def process_messages(event, context):
     :param context:
     :return:
     """
-    # __acquire_logger()
+
     env_name = os.environ.get('env')
 
     if not env_name:
@@ -775,6 +776,7 @@ def process_messages(event, context):
 
     load_config(env_name)
 
+    # Get records sent by SQS event
     if event and "Records" in event and event["Records"]:
         event_records = event["Records"]
         if event_records:

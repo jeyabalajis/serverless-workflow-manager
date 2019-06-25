@@ -44,7 +44,7 @@
       {
         "function": "workflow_event_handler.process_messages",
         "event_source": {
-          "arn": "tbd",
+          "arn": "arn:aws:sqs:ap-south-1:584566845197:workflow_queue",
           "batch_size": 10,
           "enabled": true
         }
@@ -59,6 +59,6 @@
         "Resource": "*"
       }
     ],
-    "timeout_seconds": 900
+    "timeout_seconds": 300
   }
 }

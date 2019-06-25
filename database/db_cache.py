@@ -1,4 +1,4 @@
-
+global db_cache
 db_cache = {}
 
 

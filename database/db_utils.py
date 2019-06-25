@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from config.config import get_config
 from database import db_cache
-from crypto_util import secrets_manager_service
+from secrets_manager import secrets_manager_service
 
 __logger = logging.getLogger(__name__)
 
@@ -17,10 +17,19 @@ def __is_empty(any_structure):
         return True
 
 
-def get_db_object(db_name)->object:
+def init_workflow_db(db):
     """
 
-    :type db_name: string
+    :param db:
+    :return:
+    """
+    db_cache.set_db_cache("workflow_db", db)
+
+
+def get_db_object(db_name) -> object:
+    """
+
+    :type db_name: object
     :return: pymongo client object
     """
 
@@ -30,7 +39,7 @@ def get_db_object(db_name)->object:
         __logger.info("sending db object from cache!")
         return db_handle
     else:
-        __logger.info("inside get_db_object with db name as: " + db_name)
+        __logger.info("inside get_db_object with db name as: " + str(db_name))
 
         db_credentials_id = get_config("db_credentials_id")
         db_secrets = secrets_manager_service.get_secret(db_credentials_id)
