@@ -2,10 +2,10 @@
 A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services.
 
 # Introduction
-Micro-services are key components of a cloud native, scalable distributed application. Micro services, by definition 
-are independent cohesive blocks that execute _a small but an independent_ part of a larger whole. 
+Micro-services are key components of a cloud native, scalable distributed application. They are, by definition, 
+independent cohesive blocks that execute _a small but an independent_ part of a larger whole. 
 
-However, from the business perspective, there is a single business goal that has to be accomplished irrespective of the 
+However, from a business perspective, there is a single business goal that has to be accomplished irrespective of the 
 number of micro - services employed under the hood or how they are deployed.
 
 Consider the example of fulfilling a food order delivery. There are complex micro services under the hood interacting
