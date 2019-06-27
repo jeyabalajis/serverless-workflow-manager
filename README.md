@@ -47,4 +47,4 @@ to be completed before it executes this task.
 the task. One can write independent module for handling human tasks as per the requirements.
 
 Consider the example of a pizza delivery workflow. The different stages and tasks involved can be pictorially depicted as follows:
- ![GitHub Logo](/images/food_delivery_workflow.png)
+ ![GitHub Logo](/images/food_delivery_workflow_revised.png)
