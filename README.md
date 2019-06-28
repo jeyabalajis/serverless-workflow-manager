@@ -145,5 +145,6 @@ The workflow manager communicates with the outside world through a specific set 
 
 | Event Name| Description|
 | :-------: | :--------: |
-| StartWorkflow | This event is sent by an API Service to initiate a workflow|
-     
+| StartWorkflow | This event is sent by an API Service to start a workflow. Upon receiving this event, the workflow manager creates a workflow instance and schedules the tasks|
+| TaskCompleted | This event is sent by the microservice task to signal that the scheduled work has been completed. Upon receiving this event, the workflow manager looks for next set of tasks to schedule, if any. The workflow manager also advances the stages, if required. If all the tasks under all the stages are completed, the workflow is considered closed.|
+| TaskFailed | This event is sent by an API Service to start a workflow. Upon receiving this event, the workflow manager creates a workflow instance and schedules the tasks|     
