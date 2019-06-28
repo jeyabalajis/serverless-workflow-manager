@@ -271,6 +271,8 @@ The workflow manager listens to a specific queue onto which other components com
 }
 ```
 
+> If a task contains additional fields configured in the workflow template, the workflow manager will pack them in this payload.
+
 #### TaskCompleted signal from Task
 ```json
 {
