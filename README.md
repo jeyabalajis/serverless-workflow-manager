@@ -40,8 +40,10 @@ The workflow authoring template also allows you to visualize the current state o
 The workflow manager uses a JSON based workflow template to acquire an orchestration plan. The workflow template is 
 conceptually organized as a __series of stages__, with each stage containing one or many __tasks__.
 
-> A task is a micro - service that is responsible for executing the intended business logic and maintain state
-> A task may wait for one or more tasks to complete before it can start. 
+> A task is a micro - service that is responsible for executing the intended business logic and maintain state.
+
+> A task may have to wait for one or more tasks to complete before it can start. 
+
 > A stage provides a logical separation between certain groups of tasks.
    
 1. The execution of stages is strictly serial. I.e. until a stage is completed, the workflow manager does not move to the next stage.
@@ -128,16 +130,109 @@ The workflow template for this image will look as follows:
 }
 ```
 
-> The workflow template allows you to model any complex workflow using the above concepts of stage segregation & tasks dependencies.    
+> The workflow JSON template allows you to model any complex workflow using the above concepts of stage segregation & tasks dependencies.    
 
 > Modeling the workflow template as a JSON provides additional flexibility to pack in fields which are required by the task.
-For example, in the above JSON template, deliver_food task contains an additional field assigned_to, which specifies
-the specific roles which can complete this human task.
+ - For example, in the above JSON template, deliver_food task contains an additional field assigned_to, which specifies
+the specific roles which can complete this human task. 
+ - You may also want to notify customer when the last task of a stage gets completed.
+The JSON template allows you extend the core workflow scheduling to suit your needs.
 
 ## Workflow Instance
 
 The workflow manager persists and tracks the current state of the workflow (i.e. the workflow instance) in a separate database collection. 
 This enables another retry component to either retry a specific task (or) replay the entire workflow in a standard way.
+
+For example, in the case of the pizza delivery workflow depicted above, let us say that the order has been confirmed and the PREPARE stage is currently active.
+
+Under PREPARE stage, make_food and assign_executive tasks will be scheduled simultaneously.
+
+The workflow instance will look as follows:
+```json
+{  
+    "business_ref_no" : "ORDER-001", 
+    "component_name" : "ITALIAN", 
+    "stages" : [
+        {
+            "stage_name" : "START", 
+            "stage_order" : 0.0, 
+            "status" : "COMPLETED"
+        }, 
+        {
+            "stage_name" : "ORDER", 
+            "stage_order" : 1.0, 
+            "tasks" : [
+                {
+                    "task_name" : "confirm_order", 
+                    "parent_task" : [], 
+                    "task_queue" : "confirm_order_queue", 
+                    "task_type" : "SERVICE", 
+                    "business_status" : "ORDER CONFIRMED", 
+                    "status" : "COMPLETED", 
+                    "reason" : "", 
+                    "last_updated_time_pretty" : "Fri Jun 28 10:45:41 2019"
+                }
+            ], 
+            "status" : "COMPLETED"
+        }, 
+        {
+            "stage_name" : "PREPARE", 
+            "stage_order" : 2.0, 
+            "tasks" : [
+                {
+                    "task_name" : "make_food", 
+                    "parent_task" : [], 
+                    "task_type" : "SERVICE", 
+                    "task_queue" : "make_food_queue", 
+                    "status" : "SCHEDULED", 
+                    "reason" : null, 
+                    "last_updated_time_pretty" : "Fri Jun 28 10:45:42 2019"
+                }, 
+                {
+                    "task_name" : "assign_executive", 
+                    "parent_task" : [], 
+                    "task_queue" : "assign_executive_queue", 
+                    "task_type" : "SERVICE", 
+                    "status" : "SCHEDULED", 
+                    "reason" : null, 
+                    "last_updated_time_pretty" : "Fri Jun 28 10:45:42 2019"
+                }, 
+                {
+                    "task_name" : "confirm_delivery", 
+                    "parent_task" : [
+                        "make_food", 
+                        "assign_executive"
+                    ], 
+                    "task_queue" : "confirm_delivery_queue", 
+                    "task_type" : "SERVICE", 
+                    "business_status" : "FOOD ON THE WAY", 
+                    "status" : "PENDING"
+                }
+            ], 
+            "status" : "ACTIVE"
+        }, 
+        {
+            "stage_name" : "DELIVER", 
+            "stage_order" : 3.0, 
+            "tasks" : [
+                {
+                    "task_name" : "deliver_food", 
+                    "parent_task" : [], 
+                    "task_type" : "HUMAN", 
+                    "task_queue" : "deliver_food_queue", 
+                    "assigned_to" : "delivery_executive", 
+                    "business_status" : "FOOD DELIVERED", 
+                    "status" : "PENDING"
+                }
+            ], 
+            "status" : "NOT STARTED"
+        }
+    ], 
+    "version" : 18, 
+    "workflow_name" : "Deliver Pizza", 
+    "updated_at" : "2019-06-28T10:45:43.012+0000"
+}
+```
 
 ## Workflow events
 
@@ -150,7 +245,41 @@ The workflow manager communicates with the outside world through a specific set 
 | TaskFailed | This event is sent by a micro - service task to signal that the task has failed. Upon receiving this event, the workflow manager just persists this status to the workflow instance. A separate re-trier component may be implemented to functionally handle the retries of this task.|     
 | TaskPending | This event is sent by a re-trier task to reschedule a task. Upon receiving this event, thw workflow manager reschedules this task.|
 
+The workflow manager listens to a specific queue onto which other components communicate with events.
+
+![Food delivery workflow](/images/workflow_events.png)
+
 ### Workflow event samples
 
 #### StartWorkflow
- 
+```json
+{
+    "business_ref_no" : "ORDER-001", 
+    "component_name" : "ITALIAN", 
+    "event_name": "StartWorkflow"
+}
+```
+
+#### Payload from Workflow when a Task is scheduled
+```json
+{
+    "business_ref_no": "ORDER-001",
+    "component_name": "ITALIAN",
+    "event_name": "StartTask",
+    "stage_name": "ORDER",
+    "task_name": "confirm_order",
+    "task_type": "SERVICE"
+}
+```
+
+#### TaskCompleted signal from Task
+```json
+{
+    "business_ref_no": "ORDER-001",
+    "component_name": "ITALIAN",
+    "event_name": "TaskCompleted",
+    "stage_name": "ORDER",
+    "task_name": "confirm_order",
+    "task_type": "SERVICE"
+}
+```
