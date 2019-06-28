@@ -8,7 +8,7 @@ independent cohesive components that execute _a small but an independent_ part o
 However, from a business perspective, there is a single business goal that has to be accomplished irrespective of the 
 number of micro - services employed under the hood or how they are deployed.
 
-Consider the example of fulfilling a food order. There are a anumber of complex micro services under the hood interacting
+Consider the example of fulfilling a food order. There are a number of complex micro services under the hood interacting
 with each other, coupled with human interactions. But the singular business objective in this case is to deliver the food on time.  
 
 A work-queue based scheduler agent supervisor pattern (https://docs.microsoft.com/en-us/azure/architecture/patterns/scheduler-agent-supervisor) 
@@ -39,6 +39,11 @@ The workflow authoring template also allows you to visualize the current state o
 
 The workflow manager uses a JSON based workflow template to acquire an orchestration plan. The workflow template is 
 conceptually organized as a __series of stages__, with each stage containing one or many __tasks__.
+
+> A task is a micro - service that is responsible for executing the intended business logic and maintain state
+> A task may wait for one or more tasks to complete before it can start. 
+> A stage provides a logical separation between certain groups of tasks.
+   
 1. The execution of stages is strictly serial. I.e. until a stage is completed, the workflow manager does not move to the next stage.
 2. The tasks under a stage can be configured either as independent tasks (or) dependent tasks.
 3. A task can be dependent on more than one task. In this case, the workflow manager waits for all the dependent tasks 
@@ -47,4 +52,98 @@ to be completed before it executes this task.
 the task. One can write independent module for handling human tasks as per the requirements.
 
 Consider the example of a pizza delivery workflow. The different stages and tasks involved can be pictorially depicted as follows:
- ![GitHub Logo](/images/food_delivery_workflow_revised.png)
+ ![Food delivery workflow](/images/food_delivery_workflow_revised.png)
+ 
+The following are the significant points from this image:
+- The tasks to be executed are contained in specific stages. This enables a simple but robust way to control when some tasks are executed.
+For example, Make food task __will never get executed__ until the (ingredients) availability is confirmed from the restaurant.
+- There are some tasks that may execute independently & there may be some tasks that are dependent on completion of certain other task(s)
+
+The workflow template for this image will look as follows:
+```json
+{  
+    "workflow_name" : "Deliver Pizza", 
+    "component_name" : "ITALIAN", 
+    "stages" : [
+        {
+            "stage_name" : "START", 
+            "stage_order" : 0.0
+        }, 
+        {
+            "stage_name" : "ORDER", 
+            "stage_order" : 1.0, 
+            "tasks" : [
+                {
+                    "task_name" : "confirm_order", 
+                    "parent_task" : [], 
+                    "task_queue" : "confirm_order_queue", 
+                    "task_type" : "SERVICE", 
+                    "business_status" : "ORDER CONFIRMED"
+                }
+            ]
+        }, 
+        {
+            "stage_name" : "PREPARE", 
+            "stage_order" : 2.0, 
+            "tasks" : [
+                {
+                    "task_name" : "make_food", 
+                    "parent_task" : [], 
+                    "task_type" : "SERVICE", 
+                    "task_queue" : "make_food_queue"
+                }, 
+                {
+                    "task_name" : "assign_executive", 
+                    "parent_task" : [], 
+                    "task_queue" : "assign_executive_queue", 
+                    "task_type" : "SERVICE"
+                }, 
+                {
+                    "task_name" : "confirm_delivery", 
+                    "parent_task" : [
+                        "make_food", 
+                        "assign_executive"
+                    ], 
+                    "task_queue" : "confirm_delivery_queue", 
+                    "task_type" : "SERVICE", 
+                    "business_status" : "FOOD ON THE WAY"
+                }
+            ]
+        }, 
+        {
+            "stage_name" : "DELIVER", 
+            "stage_order" : 3.0, 
+            "tasks" : [
+                {
+                    "task_name" : "deliver_food", 
+                    "parent_task" : [], 
+                    "task_type" : "HUMAN", 
+                    "task_queue" : "deliver_food_queue", 
+                    "assigned_to" : "delivery_executive", 
+                    "business_status" : "FOOD DELIVERED"
+                }
+            ]
+        }
+    ]
+}
+```
+
+> The workflow template allows you to model any complex workflow using the above concepts of stage segregation & tasks dependencies.    
+
+> Modeling the workflow template as a JSON provides additional flexibility to pack in fields which are required by the task.
+For example, in the above JSON template, deliver_food task contains an additional field assigned_to, which specifies
+the specific roles which can complete this human task.
+
+## Workflow Instance
+
+The workflow manager persists and tracks the current state of the workflow (i.e. the workflow instance) in a separate database collection. 
+This enables another retry component to either retry a specific task (or) replay the entire workflow in a standard way.
+
+## Workflow events
+
+The workflow manager communicates with the outside world through a specific set of events, as follows.
+
+| Event Name| Description|
+| :-------: | :--------: |
+| StartWorkflow | This event is sent by an API Service to initiate a workflow|
+     
