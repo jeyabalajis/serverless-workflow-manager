@@ -236,7 +236,7 @@ The workflow instance will look as follows:
 
 ## Workflow events
 
-The workflow manager communicates with the outside world through a specific set of events, as follows.
+The workflow manager listens to a specific queue onto which other components communicate through events, as follows.
 
 | Event Name| Description|
 | :-------: | :--------: |
@@ -245,7 +245,6 @@ The workflow manager communicates with the outside world through a specific set 
 | TaskFailed | This event is sent by a micro - service task to signal that the task has failed. Upon receiving this event, the workflow manager just persists this status to the workflow instance. A separate re-trier component may be implemented to functionally handle the retries of this task.|     
 | TaskPending | This event is sent by a re-trier task to reschedule a task. Upon receiving this event, thw workflow manager reschedules this task.|
 
-The workflow manager listens to a specific queue onto which other components communicate with events.
 
 ![Food delivery workflow](/images/workflow_events.png)
 
@@ -278,6 +277,30 @@ The workflow manager listens to a specific queue onto which other components com
     "business_ref_no": "ORDER-001",
     "component_name": "ITALIAN",
     "event_name": "TaskCompleted",
+    "stage_name": "ORDER",
+    "task_name": "confirm_order",
+    "task_type": "SERVICE"
+}
+```
+
+#### TaskFailed signal from Task
+```json
+{
+    "business_ref_no": "ORDER-001",
+    "component_name": "ITALIAN",
+    "event_name": "TaskFailed",
+    "stage_name": "ORDER",
+    "task_name": "confirm_order",
+    "task_type": "SERVICE"
+}
+```
+
+#### TaskPending signal from Retry manager
+```json
+{
+    "business_ref_no": "ORDER-001",
+    "component_name": "ITALIAN",
+    "event_name": "TaskPending",
     "stage_name": "ORDER",
     "task_name": "confirm_order",
     "task_type": "SERVICE"
