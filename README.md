@@ -327,8 +327,17 @@ The workflow manager listens to a specific queue onto which other components com
 3. The workflow manager uses AWS SQS as a trigger event source. Ensure that correct _event_source_ _arn_ is configured under zappa_settings.json  
 4. Ensure that the SQS queues that are referred to in the workflow template are configured under AWS SQS console. 
 
-#### Deploy instructions
+### Deploy instructions
 1. Clone or download the project into your local repository.
 2. Create a virtual environment with Python 3.6 or above and activate the same.
 3. To deploy this as a FaaS through [AWS Lambda](https://aws.amazon.com/lambda/), use [Zappa](https://www.zappa.io/), a framework for Serverless Python Web Services - Powered by AWS Lambda and API Gateway
     - Modify the configuration under zappa_settings.json ans change the parameters appropriately before initiating a deploy. 
+
+# Reliability considerations
+
+## Database
+
+1. Due to the inherent stateless nature of AWS Lambda service, there is no guarantee that the Lambda preserves database connections across different invocations.
+2. Ensure that the workflow manager deployed as a lambda uses only a specific number of **reserved concurrency** under AWS Lambda console, depending on the size of the MongoDB instance.
+3. Ensure that unique index is created on business_ref_no, stages.stage_name and tasks.task_name on workflow instance collection for optimal performance.
+4. You may want to purge old workflow instances as the size grows.
