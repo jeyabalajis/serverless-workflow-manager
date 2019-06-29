@@ -11,26 +11,20 @@ number of micro - services employed under the hood or how they are deployed.
 Consider the example of fulfilling a food order. There are a number of complex micro services under the hood interacting
 with each other, coupled with human interactions. But the singular business objective in this case is to deliver the food on time.  
 
-A work-queue based scheduler agent supervisor pattern (https://docs.microsoft.com/en-us/azure/architecture/patterns/scheduler-agent-supervisor) 
+> A work-queue based scheduler agent supervisor pattern (https://docs.microsoft.com/en-us/azure/architecture/patterns/scheduler-agent-supervisor) 
 is a robust way to __coordinate__ a series of distributed actions as a __single operation__.
 
-_Serverless Workflow Manager_ is an implementation of this pattern. There are two significant features that 
-set apart this implementation:
-
-- The workflow manager is built as a server less service. Hence, it can be deployed as an independent
-_scalable_ micro - service. With this, the workflow manager __does not__ become a single point of failure.
-- The workflow manager uses a simple, yet powerful workflow authoring template with which any complex service dependency can be modeled with ease.
-With this powerful template, the workflows can be authored or modified easily, with an additional benefit of audit trail of changes.
-
-The workflow authoring template also allows you to visualize the current state of the workflow in the front-end, thus providing an excellent way to monitor and control the flow.          
+_Serverless Workflow Manager_ is an implementation of this pattern.
 
 # Key Features
 1. Ability to *declaratively* author business workflows for distributed micro-services.
-2. Supports easy modeling of complex dependencies across micro-services.
+    - The authoring template also allows you to visualize the current state of the workflow in the front-end, thus providing an excellent way to monitor and control the flow.
+2. Enables modeling of any complex inter-service dependency with ease, with an additional benefit of providing versioning and audit trail.
 3. All the events processed are persisted in a separate collection, making the entire workflow **observable** and **auditable**.  
 4. Ability to __replay__ events for a specific stage or task multiple times when required. I.e. the workflow can be __resumed__ at any point in time.
 5. Uses AWS Simple Queue Service (Amazon SQS), a fully managed message queuing service that makes it easy to decouple and scale micro-services.
-7. The workflow manager is server less! - perfect for hosting it as an independent micro-service.
+7. The workflow manager is server less! - perfect for hosting and scaling it as an independent micro-service. The scheduler __does not__ become a 
+single point of failure with this approach.
 8. Written in Python 3.6 with minimal requirements. Uses MongoDB as a database backing service. 
 
 # Underlying Concepts
@@ -45,19 +39,21 @@ conceptually organized as a __series of stages__, with each stage containing one
 > A task may have to wait for one or more tasks to complete before it can start. 
 
 > A stage provides a logical separation between certain groups of tasks.
-   
-1. The execution of stages is strictly serial. I.e. until a stage is completed, the workflow manager does not move to the next stage.
-2. The tasks under a stage can be configured either as independent tasks (or) dependent tasks.
-3. A task can be dependent on more than one task. In this case, the workflow manager waits for all the dependent tasks 
-to be completed before it executes this task.
-4. A task can be of type HUMAN or SERVICE. For workflow manager, it does not make a difference. It just schedules
+
+> The execution of stages is strictly serial. I.e. until a stage is completed, the workflow manager does not move to the next stage.
+
+> The workflow manager controls when a task is scheduled through dependency resolution from the workflow template
+
+> Each task receives instructions to start execution through a specific designated queue, which is configured in the template
+
+> A task can be of type HUMAN or SERVICE. For workflow manager, it does not make a difference. It just schedules
 the task. One can write independent module for handling human tasks as per the requirements.
 
 Consider the example of a pizza delivery workflow. The different stages and tasks involved can be pictorially depicted as follows:
  ![Food delivery workflow](/images/food_delivery_workflow_revised.png)
  
 The following are the significant points from this image:
-- The tasks to be executed are contained in specific stages. This enables a simple but robust way to control when some tasks are executed.
+- The tasks to be executed are contained in specific stages. This enables a simple but robust way to control execution for a _group of tasks_.
 For example, Make food task __will never get executed__ until the (ingredients) availability is confirmed from the restaurant.
 - There are some tasks that may execute independently & there may be some tasks that are dependent on completion of certain other task(s)
 
@@ -134,7 +130,7 @@ The workflow template for this image will look as follows:
 
 > Modeling the workflow template as a JSON provides additional flexibility to pack in fields which are required by the task.
  - For example, in the above JSON template, deliver_food task contains an additional field assigned_to, which specifies
-the specific roles which can complete this human task. 
+the specific roles which can complete this human task. The human task implementation may use this field to enforce access control. 
  - You may also want to notify customer when the last task of a stage gets completed.
 The JSON template allows you extend the core workflow scheduling to suit your needs.
 
@@ -234,6 +230,9 @@ The workflow instance will look as follows:
 }
 ```
 
+> The retry manager can be implemented for specific micro - services as per the needs. The retry manager may also track the number of
+retries done for a task and implement exponential back-off etc.
+
 ## Workflow events
 
 The workflow manager listens to a specific queue onto which other components communicate through events, as follows.
@@ -308,3 +307,28 @@ The workflow manager listens to a specific queue onto which other components com
     "task_type": "SERVICE"
 }
 ```
+
+# Deployment
+
+### Pre-requisites
+
+#### Database
+1. The workflow templates must be stored in a MongoDB database. You can specify the database name under config.ini against the key **workflow_db**
+
+|Key Name|Value|
+|:------:|:---:|
+|db_url|URI of the MongoDB Database|
+|user_name|User name to login to the database|
+|password|Password to login to the database|
+
+#### AWS
+1. Create a secret name prod/DBAuthentication with the following key value pairs to point to the rules database
+2. Specify the correct aws credentials profile name against the key **profile_name** under config.ini
+3. The workflow manager uses AWS SQS as a trigger event source. Ensure that correct _event_source_ _arn_ is configured under zappa_settings.json  
+4. Ensure that the SQS queues that are referred to in the workflow template are configured under AWS SQS console. 
+
+#### Deploy instructions
+1. Clone or download the project into your local repository.
+2. Create a virtual environment with Python 3.6 or above and activate the same.
+3. To deploy this as a FaaS through [AWS Lambda](https://aws.amazon.com/lambda/), use [Zappa](https://www.zappa.io/), a framework for Serverless Python Web Services - Powered by AWS Lambda and API Gateway
+    - Modify the configuration under zappa_settings.json ans change the parameters appropriately before initiating a deploy. 
