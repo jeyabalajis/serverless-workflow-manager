@@ -1,6 +1,8 @@
 # Serverless Workflow Manager
 A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services.
 
+It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                                    
+                                                
 # Introduction
 Micro-services are key building blocks of a cloud native, scalable distributed application. They are, by definition, 
 independent cohesive components that execute _a small but an independent_ part of a larger whole. 
