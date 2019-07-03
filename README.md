@@ -238,6 +238,8 @@ The workflow instance will look as follows:
 > The retry manager can be implemented for specific micro - services as per the needs. The retry manager may also track the number of
 retries done for a task and implement exponential back-off etc.
 
+> Since the workflow instance contains the current state of the business flow, it can be used in the front-end to visualise and monitor business flows.
+
 ## Workflow events
 
 The workflow manager listens to a specific queue onto which other components communicate through events, as follows.
