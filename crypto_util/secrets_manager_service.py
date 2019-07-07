@@ -13,6 +13,8 @@ def get_secret(secret_name):
 
     # Create a Secrets Manager client. For local executions, use a specific named aws configuration profile
     # When executed through Lambda, use default profile
+    print("framework" + str(os.environ['FRAMEWORK']))
+
     if 'FRAMEWORK' in os.environ and os.environ['FRAMEWORK'] in ('Zappa', 'CircleCi'):
         session = boto3.session.Session()
     else:
