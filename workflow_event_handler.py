@@ -57,7 +57,7 @@ def __get_workflow_definition(component_name):
     return workflow_def_record
 
 
-def __get_workflow_instance(business_ref_no):
+def get_workflow_instance(business_ref_no):
     """
     Get a workflow instance for a business_ref_no
     :param business_ref_no:
@@ -449,7 +449,7 @@ def __resolve_next_active_stage(business_ref_no):
     """
     __logger.info("*** RESOLVE NEXT STAGE ***")
     try:
-        workflow_instance = __get_workflow_instance(business_ref_no)
+        workflow_instance = get_workflow_instance(business_ref_no)
         active_stage = {}
 
         if not __is_empty(workflow_instance) and "stages" in workflow_instance:
@@ -719,7 +719,7 @@ def __update_task_from_message(p_message, p_status):
         __logger.info('task is updated! now check if something more has to be scheduled')
 
         __logger.info('acquire workflow instance and schedule new tasks')
-        workflow_instance = __get_workflow_instance(p_message["business_ref_no"])
+        workflow_instance = get_workflow_instance(p_message["business_ref_no"])
         if not __is_empty(workflow_instance):
             __logger.info('find and schedule tasks')
             __find_and_schedule_tasks(workflow_instance)
@@ -736,8 +736,19 @@ def __fn_get_queue(queue_name):
     :param queue_name:
     :return:
     """
-    # Get the queue.
-    __sqs = boto3.resource('sqs')
+
+    region_name = config.get_config("region_name")
+    profile_name = config.get_config("profile_name")
+
+    # Create a SQS client. For local executions, use a specific named aws configuration profile
+    # When executed through Lambda, use default profile
+    if 'FRAMEWORK' in os.environ and os.environ['FRAMEWORK'] == 'Zappa':
+        session = boto3.session.Session()
+    else:
+        session = boto3.session.Session(profile_name=profile_name)
+
+    __sqs = session.resource(service_name='sqs', region_name=region_name)
+
     queue = __sqs.get_queue_by_name(QueueName=queue_name)
     return queue
 
