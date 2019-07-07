@@ -16,7 +16,10 @@ def get_secret(secret_name):
     if 'FRAMEWORK' in os.environ and os.environ['FRAMEWORK'] in ('Zappa', 'CircleCi'):
         session = boto3.session.Session()
     else:
-        session = boto3.session.Session(profile_name=profile_name)
+        try:
+            session = boto3.session.Session(profile_name=profile_name)
+        except:
+            session = boto3.session.Session()
 
     # Create a Secrets Manager client
     client = session.client(
