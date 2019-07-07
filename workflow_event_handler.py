@@ -742,7 +742,7 @@ def __fn_get_queue(queue_name):
 
     # Create a SQS client. For local executions, use a specific named aws configuration profile
     # When executed through Lambda, use default profile
-    if 'FRAMEWORK' in os.environ and os.environ['FRAMEWORK'] == 'Zappa':
+    if 'FRAMEWORK' in os.environ and os.environ['FRAMEWORK'] in ('Zappa', 'CircleCi'):
         session = boto3.session.Session()
     else:
         session = boto3.session.Session(profile_name=profile_name)
