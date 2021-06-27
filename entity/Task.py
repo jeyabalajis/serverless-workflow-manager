@@ -1,4 +1,5 @@
 from exceptions.WorkflowValueError import WorkflowValueError
+from typing import Dict
 
 
 class Task:
@@ -10,10 +11,26 @@ class Task:
     COMPLETED_STATUS = "COMPLETED"
     FAILED_STATUS = "FAILED"
 
-    def __init__(self, *, task_name: str, task_type: str, parent_tasks: [str], **kwargs):
+    def __init__(self, *,
+                 task_name: str,
+                 task_type: str,
+                 task_queue: str,
+                 parent_task: [str] = None,
+                 status: str = None,
+                 **kwargs):
         self.task_name = task_name
         self.task_type = task_type
-        self.parent_tasks = parent_tasks
+        self.task_queue = task_queue
+        if parent_task is not None:
+            self.parent_task = parent_task
+        else:
+            self.parent_task = []
+
+        if status is not None:
+            self.status = status
+        else:
+            self.status = self.PENDING_STATUS
+
         self.__validate_task_type()
         self.status = self.PENDING_STATUS
         for key, val in kwargs.items():
@@ -35,4 +52,15 @@ class Task:
     def set_misc_attributes(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)
+
+    @classmethod
+    def from_json(cls, task_dict: Dict):
+        return Task(**task_dict)
+
+    def __str__(self):
+        my_str = []
+        for key, val in self.__dict__.items():
+            my_str.append('%s: %s ' % (str(key), str(val)))
+
+        return "".join(my_str)
 
