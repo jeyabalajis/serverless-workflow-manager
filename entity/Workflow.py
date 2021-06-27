@@ -33,18 +33,18 @@ class Workflow:
             if not isinstance(stage, Stage):
                 raise WorkflowTypeError("all elements of stages must be of type Stage")
 
-    def all_dependencies_completed(self, *, stage: Stage, task: Task) -> bool:
+    def all_dependencies_completed_for_a_task(self, *, stage: Stage, task: Task) -> bool:
         if not task.parent_task:
             return True
 
         all_parents_completed = True
         for parent_task in task.parent_task:
-            parent_task_record = self.get_task(stage=stage, task_name=parent_task)
+            parent_task_record = self.get_task_by_name(stage=stage, task_name=parent_task)
             all_parents_completed = all_parents_completed and (parent_task_record.status == Task.COMPLETED_STATUS)
 
         return all_parents_completed
 
-    def get_stage(self, *, stage_name: str):
+    def get_stage_by_name(self, *, stage_name: str):
         for stage in self.stages:
             if stage.stage_name == stage_name:
                 return stage
@@ -54,7 +54,7 @@ class Workflow:
             if stage.status == Stage.ACTIVE_STATUS:
                 return stage
 
-    def get_task(self, *, stage: Stage, task_name: str):
+    def get_task_by_name(self, *, stage: Stage, task_name: str):
         for workflow_stage in self.stages:
             if not workflow_stage.stage_name == stage.stage_name:
                 continue

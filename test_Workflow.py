@@ -93,18 +93,18 @@ class TestWorkflow(TestCase):
     def test_all_dependencies_completed_false(self):
         workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
 
-        stage = workflow_object.get_stage(stage_name="PREPARE")
-        task = workflow_object.get_task(stage=stage, task_name="confirm_delivery")
-        all_deps_completed = workflow_object.all_dependencies_completed(stage=stage, task=task)
+        stage = workflow_object.get_stage_by_name(stage_name="PREPARE")
+        task = workflow_object.get_task_by_name(stage=stage, task_name="confirm_delivery")
+        all_deps_completed = workflow_object.all_dependencies_completed_for_a_task(stage=stage, task=task)
 
         assert all_deps_completed is False
 
     def test_all_dependencies_completed_true(self):
         workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
 
-        stage = workflow_object.get_stage(stage_name="ORDER")
-        task = workflow_object.get_task(stage=stage, task_name="confirm_order")
-        all_deps_completed = workflow_object.all_dependencies_completed(stage=stage, task=task)
+        stage = workflow_object.get_stage_by_name(stage_name="ORDER")
+        task = workflow_object.get_task_by_name(stage=stage, task_name="confirm_order")
+        all_deps_completed = workflow_object.all_dependencies_completed_for_a_task(stage=stage, task=task)
 
         assert all_deps_completed is True
 
