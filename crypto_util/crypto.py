@@ -1,17 +1,16 @@
 import base64
-import boto3
-import blowfish
-import logging
-import os
-from botocore.exceptions import ClientError
 import json
+import logging
+
+import blowfish
+import boto3
+from botocore.exceptions import ClientError
 
 __logger = logging.getLogger(__name__)
 
 
 # Jeya@12-Nov-2018 New function created to retrieve secret from aws secrets manager
 def __get_secret():
-
     secret_name = "prod/accessKey"
     region_name = "ap-south-1"
 

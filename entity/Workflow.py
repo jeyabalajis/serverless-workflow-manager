@@ -1,6 +1,7 @@
+from typing import Dict, List, Union
+
 from entity.Stage import Stage
 from entity.Task import Task
-from typing import Dict, List
 from exceptions.WorkflowTypeError import WorkflowTypeError
 from exceptions.WorkflowValueError import WorkflowValueError
 
@@ -44,17 +45,24 @@ class Workflow:
 
         return all_parents_completed
 
-    def get_stage_by_name(self, *, stage_name: str):
+    def get_stage_by_name(self, *, stage_name: str) -> [Stage, None]:
         for stage in self.stages:
             if stage.stage_name == stage_name:
                 return stage
+        return None
 
-    def get_active_stage(self):
+    def get_stage_by_order(self, *, stage_order: int) -> [Stage, None]:
+        for stage in self.stages:
+            if stage.stage_order == stage_order:
+                return stage
+        return None
+
+    def get_active_stage(self) -> Stage:
         for stage in self.stages:
             if stage.status == Stage.ACTIVE_STATUS:
                 return stage
 
-    def get_task_by_name(self, *, stage: Stage, task_name: str):
+    def get_task_by_name(self, *, stage: Stage, task_name: str) -> Union[Task, None]:
         for workflow_stage in self.stages:
             if not workflow_stage.stage_name == stage.stage_name:
                 continue
@@ -64,3 +72,83 @@ class Workflow:
                     continue
                 return workflow_task
         return None
+
+    def mark_stage_as_completed(self, *, stage: Stage):
+        """
+        Mark the stage passed in as COMPLETED and ACTIVATE the next stage (if any)
+        :param stage:
+        :return:
+        """
+        for workflow_stage in self.stages:
+            if workflow_stage.stage_name == stage.stage_name:
+                workflow_stage.status = Stage.COMPLETED_STATUS
+
+                next_stage = self.get_stage_by_order(stage_order=workflow_stage.stage_order + 1)
+                if next_stage is not None:
+                    next_stage.status = Stage.ACTIVE_STATUS
+
+    def mark_task_as_completed(self, *, stage: Stage, task: Task):
+        for workflow_stage in self.stages:
+            if workflow_stage.stage_name == stage.stage_name:
+                for workflow_task in workflow_stage.tasks:
+                    if workflow_task.task_name == task.task_name:
+                        workflow_task.status = Task.COMPLETED_STATUS
+
+    def mark_task_as_scheduled(self, *, stage: Stage, task: Task):
+        for workflow_stage in self.stages:
+            if workflow_stage.stage_name == stage.stage_name:
+                for workflow_task in workflow_stage.tasks:
+                    if workflow_task.task_name == task.task_name:
+                        workflow_task.status = Task.SCHEDULED_STATUS
+
+    def schedule_pending_tasks_for_stage(self, *, stage: Stage, pending_tasks: [Task]):
+        for pending_task in pending_tasks:
+            if self.all_dependencies_completed_for_a_task(stage=stage, task=pending_task):
+                self.mark_task_as_scheduled(stage=stage, task=pending_task)
+
+    def find_and_schedule_tasks(self):
+        """
+
+        :return:
+        The workflow instance is organized as a set of stages & a set of tasks inside each stage.
+        At any point in time, only one stage is ACTIVE.
+        Logic:
+        For the instance, get the current active stage.
+        if active stage is found
+            [1] get pending tasks & schedule them, provided their dependencies are completed
+            if no pending tasks, mark current stage as closed, get the next active stage & repeat [1]
+            if no active stage, just close the workflow and return
+        if active stage is not found
+            this is an instance with no active stage, just close the workflow and return
+
+        Please note that the workflow manager DOES NOT WAIT or SLEEP. It reacts based on events.
+        Upon StartWorkflow event, the tasks eligible to be scheduled are scheduled.
+        When these tasks are marked completed (TaskCompleted), the next set of eligible tasks on the task are scheduled
+        When there are no more tasks to schedule in a stage, the next stage is activated & the process repeated.
+
+        """
+
+        find_tasks = True
+        while find_tasks:
+            active_stage = self.get_active_stage()
+
+            # If no active stages are found, the whole workflow is done
+            if active_stage is None:
+                find_tasks = False
+                continue
+
+            # Get pending tasks for the active stage
+            pending_tasks = active_stage.get_pending_tasks()
+
+            if pending_tasks:
+                self.schedule_pending_tasks_for_stage(stage=active_stage, pending_tasks=pending_tasks)
+                find_tasks = False
+            else:
+                # If all tasks are completed, mark stage as completed and go to the next stage
+                if active_stage.all_tasks_completed():
+                    self.mark_stage_as_completed(stage=active_stage)
+                else:
+                    # Tasks are SCHEDULED and yet to be done.
+                    find_tasks = False
+
+        print("done scheduling")

@@ -1,12 +1,13 @@
 import base64
+import os
+
 import boto3
 from botocore.exceptions import ClientError
+
 from config.config import get_config
-import os
 
 
 def get_secret(secret_name):
-
     region_name = get_config("region_name")
     profile_name = get_config("profile_name")
 

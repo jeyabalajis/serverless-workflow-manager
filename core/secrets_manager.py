@@ -2,9 +2,9 @@ import base64
 
 import boto3
 from botocore.exceptions import ClientError
+from utils import env_util
 
 from exceptions import PullStockPriceException
-from utils import env_util
 
 
 class SecretsManager:

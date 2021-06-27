@@ -1,6 +1,7 @@
-from unittest import TestCase
-from entity.Task import Task
 import json
+from unittest import TestCase
+
+from entity.Task import Task
 
 
 class TestTask(TestCase):

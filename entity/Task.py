@@ -1,5 +1,6 @@
-from exceptions.WorkflowValueError import WorkflowValueError
 from typing import Dict
+
+from exceptions.WorkflowValueError import WorkflowValueError
 
 
 class Task:
@@ -32,7 +33,6 @@ class Task:
             self.status = self.PENDING_STATUS
 
         self.__validate_task_type()
-        self.status = self.PENDING_STATUS
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -63,4 +63,3 @@ class Task:
             my_str.append('%s: %s ' % (str(key), str(val)))
 
         return "".join(my_str)
-

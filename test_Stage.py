@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from entity.Stage import Stage
 
 
@@ -45,3 +46,12 @@ class TestStage(TestCase):
 
         stage_object = Stage.from_json(test_stage)
         assert stage_object.all_tasks_completed() is False
+
+    def test_get_pending_tasks(self):
+        test_stage = self.test_stage_incomplete()
+
+        stage_object = Stage.from_json(test_stage)
+
+        pending_tasks = stage_object.get_pending_tasks()
+
+        assert pending_tasks is not None and len(pending_tasks) == 1

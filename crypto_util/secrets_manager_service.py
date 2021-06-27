@@ -1,13 +1,14 @@
 import base64
+import os
+
 import boto3
 from botocore.exceptions import ClientError
-import os
+
 from config.config import get_config
 
 
 # Jeya@12-Nov-2018 New function created to retrieve secret from aws secrets manager
 def get_secret(secret_name):
-
     region_name = "ap-south-1"
     profile_name = get_config("profile_name")
 

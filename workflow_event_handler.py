@@ -404,10 +404,10 @@ def __get_pending_tasks(active_stage, workflow_instance):
                     "status" in task
                     and task["status"] == "PENDING"
                     and __all_deps_completed(
-                        active_stage,
-                        task,
-                        workflow_instance
-                    )
+                active_stage,
+                task,
+                workflow_instance
+            )
             ):
                 pending_tasks.append(task)
     return pending_tasks

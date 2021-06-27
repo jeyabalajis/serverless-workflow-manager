@@ -1,10 +1,10 @@
 import json
 import logging
 
+import constants
 from pymongo import MongoClient
 from pymongo.database import Database
 
-import constants
 from core.db_cache import DatabaseCache
 from core.secrets_manager import SecretsManager
 

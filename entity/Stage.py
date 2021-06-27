@@ -1,5 +1,6 @@
-from entity.Task import Task
 from typing import Dict, List
+
+from entity.Task import Task
 from exceptions.WorkflowTypeError import WorkflowTypeError
 from exceptions.WorkflowValueError import WorkflowValueError
 
@@ -7,6 +8,7 @@ from exceptions.WorkflowValueError import WorkflowValueError
 class Stage:
     ACTIVE_STATUS = "ACTIVE"
     COMPLETED_STATUS = "COMPLETED"
+    NOT_STARTED_STATUS = "NOT STARTED"
 
     def __init__(self, *,
                  stage_name: str,
@@ -37,9 +39,7 @@ class Stage:
 
         tasks = [Task.from_json(task_dict=task_json) for task_json in stage_json["tasks"]]
 
-        status = None
-        if "status" in stage_json["status"]:
-            status = stage_json["status"]
+        status = stage_json["status"] if "status" in stage_json else None
 
         return Stage(
             stage_name=stage_json["stage_name"],
@@ -54,7 +54,7 @@ class Stage:
                 raise WorkflowTypeError("All elements of tasks must be of type Task")
 
     def __validate_status(self):
-        if self.status not in (self.ACTIVE_STATUS, self.COMPLETED_STATUS):
+        if self.status not in (self.ACTIVE_STATUS, self.COMPLETED_STATUS, self.NOT_STARTED_STATUS):
             raise WorkflowValueError("status must be in ACTIVE or COMPLETED")
 
     def all_tasks_completed(self):
@@ -63,3 +63,16 @@ class Stage:
             tasks_completed = tasks_completed and (task.status == Task.COMPLETED_STATUS)
 
         return tasks_completed
+
+    def get_pending_tasks(self):
+        return [task for task in self.tasks if task.status == Task.PENDING_STATUS]
+
+    def get_scheduled_tasks(self):
+        return [task for task in self.tasks if task.status == Task.SCHEDULED_STATUS]
+
+    def __str__(self):
+        my_str = []
+        for key, val in self.__dict__.items():
+            my_str.append('%s: %s ' % (str(key), str(val)))
+
+        return "".join(my_str)
