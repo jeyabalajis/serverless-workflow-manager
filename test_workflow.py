@@ -1,8 +1,8 @@
+import json
 from unittest import TestCase
 
-from entity.Stage import Stage
-from entity.Workflow import Workflow
-import json
+from entity.stage import Stage
+from entity.workflow import Workflow
 
 
 class TestWorkflow(TestCase):

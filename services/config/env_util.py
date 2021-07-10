@@ -1,5 +1,7 @@
 import os
-from services.config.ConfigManager import ConfigManager
+
+from services.config.config_manager import ConfigManager
+
 
 class EnvUtil:
     def __init__(self):

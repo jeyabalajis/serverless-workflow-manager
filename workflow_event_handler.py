@@ -1,10 +1,10 @@
 import logging
 
-from entity.StartWorkflowEvent import StartWorkflowEvent
-from entity.Task import Task
-from entity.TaskEvent import TaskEvent
-from services.events.EventUtil import EventManager
-from services.workflow.WorkflowManager import WorkflowManager
+from entity.start_workflow_event import StartWorkflowEvent
+from entity.task import Task
+from entity.task_event import TaskEvent
+from services.events.event_util import EventManager
+from services.workflow.workflow_manager import WorkflowManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from typing import Dict
 
-from exceptions.WorkflowValueError import WorkflowValueError
-from services.utils.StringUtil import StringUtil
+from exceptions.workflow_value_error import WorkflowValueError
+from services.utils.string_util import StringUtil
 
 
 class Task:

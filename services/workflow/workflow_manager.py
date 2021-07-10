@@ -1,10 +1,11 @@
-from database.WorkflowDefinitionRepository import WorkflowDefinitionRepository
-from database.WorkflowInstanceRepository import WorkflowInstanceRepository
-from entity.Event import Event
-from entity.TaskEvent import TaskEvent
-from entity.Workflow import Workflow
-from services.queue.QueueManager import QueueManager
 from typing import Union
+
+from database.workflow_definition_repository import WorkflowDefinitionRepository
+from database.workflow_instance_repository import WorkflowInstanceRepository
+from entity.event import Event
+from entity.task_event import TaskEvent
+from entity.workflow import Workflow
+from services.queue.queue_manager import QueueManager
 
 
 class WorkflowManager:

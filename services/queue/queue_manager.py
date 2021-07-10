@@ -4,8 +4,8 @@ from typing import Dict
 
 import boto3
 
-from services.config.ConfigManager import ConfigManager
-from services.config.EnvUtil import EnvUtil
+from services.config.config_manager import ConfigManager
+from services.config.env_util import EnvUtil
 
 
 class QueueManager:

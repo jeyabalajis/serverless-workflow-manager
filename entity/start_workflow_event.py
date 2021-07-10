@@ -1,5 +1,6 @@
-from entity.Event import Event
 from typing import Dict
+
+from entity.event import Event
 
 
 class StartWorkflowEvent(Event):
@@ -10,4 +11,3 @@ class StartWorkflowEvent(Event):
     @classmethod
     def from_json(cls, *, event_json: Dict):
         super(StartWorkflowEvent, cls).from_json(event_json=event_json)
-

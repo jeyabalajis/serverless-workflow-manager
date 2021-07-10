@@ -1,9 +1,9 @@
 from typing import Dict, List
 
-from entity.Task import Task
-from exceptions.WorkflowTypeError import WorkflowTypeError
-from exceptions.WorkflowValueError import WorkflowValueError
-from services.utils.StringUtil import StringUtil
+from entity.task import Task
+from exceptions.workflow_type_error import WorkflowTypeError
+from exceptions.workflow_value_error import WorkflowValueError
+from services.utils.string_util import StringUtil
 
 
 class Stage:

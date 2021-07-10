@@ -1,5 +1,6 @@
 from unittest import TestCase
-from services.config.ConfigManager import ConfigManager
+
+from services.config.config_manager import ConfigManager
 
 
 class TestConfigManager(TestCase):

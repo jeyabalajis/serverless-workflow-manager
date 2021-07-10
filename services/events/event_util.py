@@ -1,11 +1,11 @@
 import json
 from typing import Dict
 
-from entity.Event import Event
-from entity.StartWorkflowEvent import StartWorkflowEvent
-from entity.Task import Task
-from entity.TaskEvent import TaskEvent
-from exceptions.WorkflowValueError import WorkflowValueError
+from entity.event import Event
+from entity.start_workflow_event import StartWorkflowEvent
+from entity.task import Task
+from entity.task_event import TaskEvent
+from exceptions.workflow_value_error import WorkflowValueError
 
 
 class EventManager:

@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from entity.Task import Task
+from entity.task import Task
 
 
 class TestTask(TestCase):

@@ -1,7 +1,8 @@
-from entity.Event import Event
 from typing import Dict
-from exceptions.WorkflowValueError import WorkflowValueError
-from entity.Task import Task
+
+from entity.event import Event
+from entity.task import Task
+from exceptions.workflow_value_error import WorkflowValueError
 
 
 class TaskEvent(Event):

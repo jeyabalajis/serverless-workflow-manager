@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
-from services.queue.QueueManager import QueueManager
+
+from services.queue.queue_manager import QueueManager
 
 
 class TestQueueManager(TestCase):
@@ -10,5 +11,3 @@ class TestQueueManager(TestCase):
                 my_queue_manager = QueueManager(queue_name="test_queue")
                 my_queue_manager.send_message({"name": "test"})
             mock_method.assert_called_once_with({"name": "test"})
-
-

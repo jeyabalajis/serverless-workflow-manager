@@ -1,9 +1,9 @@
 from typing import Dict, List, Union
 
-from entity.Stage import Stage
-from entity.Task import Task
-from exceptions.WorkflowTypeError import WorkflowTypeError
-from exceptions.WorkflowValueError import WorkflowValueError
+from entity.stage import Stage
+from entity.task import Task
+from exceptions.workflow_type_error import WorkflowTypeError
+from exceptions.workflow_value_error import WorkflowValueError
 
 
 class Workflow:

@@ -2,11 +2,11 @@ from typing import Dict
 
 from pymongo.database import Database
 
-from entity.Workflow import Workflow
-from services.config.ConfigManager import ConfigManager
-from services.config.EnvUtil import EnvUtil
-from services.database.DatabaseUtil import DatabaseUtil
-from services.utils.DictUtil import DictUtil
+from entity.workflow import Workflow
+from services.config.config_manager import ConfigManager
+from services.config.env_util import EnvUtil
+from services.database.db_util import DatabaseUtil
+from services.utils.dict_util import DictUtil
 
 
 class WorkflowInstanceRepository:
@@ -30,7 +30,6 @@ class WorkflowInstanceRepository:
 
     @classmethod
     def upsert(cls, *, workflow: Workflow):
-
         workflow_dict: Dict = workflow.get_dict()
         DictUtil.remove_key(workflow_dict, "version")
         DictUtil.remove_key(workflow_dict, "updated_at")
