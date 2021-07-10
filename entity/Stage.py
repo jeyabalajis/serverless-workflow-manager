@@ -3,6 +3,7 @@ from typing import Dict, List
 from entity.Task import Task
 from exceptions.WorkflowTypeError import WorkflowTypeError
 from exceptions.WorkflowValueError import WorkflowValueError
+from services.utils.StringUtil import StringUtil
 
 
 class Stage:
@@ -71,8 +72,4 @@ class Stage:
         return [task for task in self.tasks if task.status == Task.SCHEDULED_STATUS]
 
     def __str__(self):
-        my_str = []
-        for key, val in self.__dict__.items():
-            my_str.append('%s: %s ' % (str(key), str(val)))
-
-        return "".join(my_str)
+        return StringUtil.dict_to_str(self.__dict__)

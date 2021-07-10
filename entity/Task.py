@@ -1,6 +1,7 @@
 from typing import Dict
 
 from exceptions.WorkflowValueError import WorkflowValueError
+from services.utils.StringUtil import StringUtil
 
 
 class Task:
@@ -58,8 +59,4 @@ class Task:
         return Task(**task_dict)
 
     def __str__(self):
-        my_str = []
-        for key, val in self.__dict__.items():
-            my_str.append('%s: %s ' % (str(key), str(val)))
-
-        return "".join(my_str)
+        return StringUtil.dict_to_str(self.__dict__)
