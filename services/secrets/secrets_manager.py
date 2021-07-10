@@ -2,9 +2,8 @@ import base64
 
 import boto3
 from botocore.exceptions import ClientError
-from utils import env_util
-
-from exceptions import PullStockPriceException
+from services.config.EnvUtil import EnvUtil
+from exceptions.WorkflowRunTimeError import WorkflowRunTimeError
 
 
 class SecretsManager:
@@ -20,7 +19,7 @@ class SecretsManager:
         if self.aws_profile_name is not None:
             aws_profile_name = self.aws_profile_name
         else:
-            aws_profile_name = env_util.get_aws_profile_name()
+            aws_profile_name = EnvUtil.get_aws_profile_name()
 
         print("aws profile name: {}".format(aws_profile_name))
 
@@ -40,7 +39,8 @@ class SecretsManager:
                 SecretId=secret_name
             )
         except ClientError as e:
-            raise PullStockPriceException(e.response['Error']['Code'], "get_secret")
+            import traceback
+            raise WorkflowRunTimeError(traceback.format_exc(e))
         else:
             # Decrypts secret using the associated KMS CMK.
             # Depending on whether the secret is a string or binary, one of these fields will be populated.

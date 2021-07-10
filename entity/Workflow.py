@@ -7,11 +7,15 @@ from exceptions.WorkflowValueError import WorkflowValueError
 
 
 class Workflow:
-    def __init__(self, *, workflow_name: str, component_name: str, stages: [Stage]):
+    def __init__(self, *, workflow_name: str, component_name: str, stages: [Stage], **kwargs):
         self.workflow_name = workflow_name
         self.component_name = component_name
         self.stages = stages
         self.__validate_stages_type()
+        self.business_ref_no = None
+
+        for key, val in kwargs.items():
+            setattr(self, key, val)
 
     @classmethod
     def from_json(cls, workflow_json: Dict):
@@ -28,6 +32,27 @@ class Workflow:
             component_name=workflow_json["component_name"],
             stages=stages
         )
+
+    @classmethod
+    def from_json_template(cls, workflow_json_template: Dict):
+        workflow: Workflow = cls.from_json(workflow_json_template)
+
+        for (ind, stage) in enumerate(workflow.stages):
+            if ind == 0:
+                stage.status = Stage.ACTIVE_STATUS
+            else:
+                stage.status = Stage.NOT_STARTED_STATUS
+
+            for task in stage.tasks:
+                task.status = Task.PENDING_STATUS
+
+        return workflow
+
+    def set_business_ref_no(self, *, business_ref_no: str):
+        self.business_ref_no = business_ref_no
+
+    def get_dict(self):
+        return self.__dict__
 
     def __validate_stages_type(self):
         for stage in self.stages:
@@ -88,18 +113,23 @@ class Workflow:
                     next_stage.status = Stage.ACTIVE_STATUS
 
     def mark_task_as_completed(self, *, stage: Stage, task: Task):
-        for workflow_stage in self.stages:
-            if workflow_stage.stage_name == stage.stage_name:
-                for workflow_task in workflow_stage.tasks:
-                    if workflow_task.task_name == task.task_name:
-                        workflow_task.status = Task.COMPLETED_STATUS
+        self.__update_task(stage=stage, task=task, status=Task.COMPLETED_STATUS)
+
+    def mark_task_as_pending(self, *, stage: Stage, task: Task):
+        self.__update_task(stage=stage, task=task, status=Task.PENDING_STATUS)
+
+    def mark_task_as_failed(self, *, stage: Stage, task: Task):
+        self.__update_task(stage=stage, task=task, status=Task.PENDING_STATUS)
 
     def mark_task_as_scheduled(self, *, stage: Stage, task: Task):
+        self.__update_task(stage=stage, task=task, status=Task.SCHEDULED_STATUS)
+
+    def __update_task(self, *, stage: Stage, task: Task, status: str):
         for workflow_stage in self.stages:
             if workflow_stage.stage_name == stage.stage_name:
                 for workflow_task in workflow_stage.tasks:
                     if workflow_task.task_name == task.task_name:
-                        workflow_task.status = Task.SCHEDULED_STATUS
+                        workflow_task.status = status
 
     def schedule_pending_tasks_for_stage(self, *, stage: Stage, pending_tasks: [Task]):
         for pending_task in pending_tasks:
@@ -122,7 +152,7 @@ class Workflow:
             this is an instance with no active stage, just close the workflow and return
 
         Please note that the workflow manager DOES NOT WAIT or SLEEP. It reacts based on events.
-        Upon StartWorkflow event, the tasks eligible to be scheduled are scheduled.
+        Upon StartWorkflow message_body, the tasks eligible to be scheduled are scheduled.
         When these tasks are marked completed (TaskCompleted), the next set of eligible tasks on the task are scheduled
         When there are no more tasks to schedule in a stage, the next stage is activated & the process repeated.
 

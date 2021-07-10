@@ -14,8 +14,8 @@ class Task:
 
     def __init__(self, *,
                  task_name: str,
-                 task_type: str,
-                 task_queue: str,
+                 task_type: str = None,
+                 task_queue: str = None,
                  parent_task: [str] = None,
                  status: str = None,
                  **kwargs):

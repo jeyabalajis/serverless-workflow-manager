@@ -3,62 +3,45 @@ import inspect
 import logging
 import os
 
-global __config
-__config = configparser.ConfigParser()
-global __env
-__env = 'unknown'
+from exceptions.WorkflowRunTimeError import WorkflowRunTimeError
 
 
-def __is_empty(any_structure: object) -> object:
-    if any_structure:
-        return False
-    else:
-        return True
+class ConfigManager:
+    def __init__(self, environment: str):
+        self.__config = configparser.ConfigParser()
+        self.environment = environment
+        self.__load_config()
 
+    def __load_config(self):
+        """
 
-def load_config(environment) -> object:
-    """
+        :return:
+        """
+        __logger = logging.getLogger(__name__)
+        __logger.info("inside load config")
 
-    :param environment:
-    :return:
-    """
-    __logger = logging.getLogger(__name__)
-    __logger.info("inside load config")
+        try:
+            path = "config.ini"
 
-    try:
-        cwd = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
-        path = cwd + "/" + "config.ini"
+            self.__config.read(path, encoding='utf-8')
 
-        print("Log configuration file:" + path)
-        global __config
-        __config.read(path, encoding='utf-8')
+        except OSError:
+            import traceback
+            __logger.error("UNABLE TO READ CONFIGURATION!!!!!!!!!!!!")
+            __logger.error(traceback.format_exc())
+            raise WorkflowRunTimeError("Unable to read config file. {}".format(traceback.format_exc()))
 
-        global __env
-        __env = environment
-    except:
-        import traceback
-        __logger.error("UNABLE TO READ CONFIGURATION!!!!!!!!!!!!")
-        __logger.error(traceback.format_exc())
+    def get_config(self, key: str) -> str:
+        """
 
+        :param key:
+        :return:
+        """
 
-def get_config(key):
-    """
+        if (
+                self.__config.has_section(self.environment)
+                and key in self.__config[self.environment]
+        ):
+            return self.__config[self.environment][key]
 
-    :param key:
-    :return:
-    """
-    __logger = logging.getLogger(__name__)
-
-    __logger.info("inside get_config get " + key + " for env " + __env)
-
-    config_value = "unknown"
-    env = __env
-
-    if not __is_empty(__config):
-        if __config.has_section(env):
-            if key in __config[env]:
-                config_value = __config[env][key]
-
-    __logger.info("config_value: ")
-    __logger.info(config_value)
-    return config_value
+        return "unknown"
