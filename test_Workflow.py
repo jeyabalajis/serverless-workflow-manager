@@ -2,95 +2,18 @@ from unittest import TestCase
 
 from entity.Stage import Stage
 from entity.Workflow import Workflow
+import json
 
 
 class TestWorkflow(TestCase):
 
-    def test_workflow(self):
-        return {
-            "business_ref_no": "ORDER-001",
-            "component_name": "ITALIAN",
-            "stages": [
-                {
-                    "stage_name": "START",
-                    "stage_order": 0.0,
-                    "status": "COMPLETED",
-                },
-                {
-                    "stage_name": "ORDER",
-                    "stage_order": 1.0,
-                    "tasks": [
-                        {
-                            "task_name": "confirm_order",
-                            "parent_task": [],
-                            "task_queue": "confirm_order_queue",
-                            "task_type": "SERVICE",
-                            "business_status": "ORDER CONFIRMED",
-                            "status": "COMPLETED",
-                            "reason": "",
-                            "last_updated_time_pretty": "Fri Jun 28 10:45:41 2019"
-                        }
-                    ],
-                    "status": "COMPLETED"
-                },
-                {
-                    "stage_name": "PREPARE",
-                    "stage_order": 2.0,
-                    "tasks": [
-                        {
-                            "task_name": "make_food",
-                            "parent_task": [],
-                            "task_type": "SERVICE",
-                            "task_queue": "make_food_queue",
-                            "status": "SCHEDULED",
-                            "last_updated_time_pretty": "Fri Jun 28 10:45:42 2019"
-                        },
-                        {
-                            "task_name": "assign_executive",
-                            "parent_task": [],
-                            "task_queue": "assign_executive_queue",
-                            "task_type": "SERVICE",
-                            "status": "SCHEDULED",
-                            "last_updated_time_pretty": "Fri Jun 28 10:45:42 2019"
-                        },
-                        {
-                            "task_name": "confirm_delivery",
-                            "parent_task": [
-                                "make_food",
-                                "assign_executive"
-                            ],
-                            "task_queue": "confirm_delivery_queue",
-                            "task_type": "SERVICE",
-                            "business_status": "FOOD ON THE WAY",
-                            "status": "PENDING"
-                        }
-                    ],
-                    "status": "ACTIVE"
-                },
-                {
-                    "stage_name": "DELIVER",
-                    "stage_order": 3.0,
-                    "tasks": [
-                        {
-                            "task_name": "deliver_food",
-                            "parent_task": [],
-                            "task_type": "HUMAN",
-                            "task_queue": "deliver_food_queue",
-                            "assigned_to": "delivery_executive",
-                            "business_status": "FOOD DELIVERED",
-                            "status": "PENDING"
-                        }
-                    ],
-                    "status": "NOT STARTED"
-                }
-            ],
-            "version": 18,
-            "workflow_name": "Deliver Pizza",
-            "updated_at": "2019-06-28T10:45:43.012+0000"
-        }
+    @classmethod
+    def get_sample_workflow_instance(cls):
+        with open("./samples/sample_workflow_instance.json") as workflow_instance_file:
+            return json.load(workflow_instance_file)
 
     def test_all_dependencies_completed_false(self):
-        workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
+        workflow_object = Workflow.from_json(workflow_json=self.get_sample_workflow_instance())
 
         stage = workflow_object.get_stage_by_name(stage_name="PREPARE")
         task = workflow_object.get_task_by_name(stage=stage, task_name="confirm_delivery")
@@ -99,7 +22,7 @@ class TestWorkflow(TestCase):
         assert all_deps_completed is False
 
     def test_all_dependencies_completed_true(self):
-        workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
+        workflow_object = Workflow.from_json(workflow_json=self.get_sample_workflow_instance())
 
         stage = workflow_object.get_stage_by_name(stage_name="ORDER")
         task = workflow_object.get_task_by_name(stage=stage, task_name="confirm_order")
@@ -108,12 +31,12 @@ class TestWorkflow(TestCase):
         assert all_deps_completed is True
 
     def test_get_active_stage(self):
-        workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
+        workflow_object = Workflow.from_json(workflow_json=self.get_sample_workflow_instance())
         active_stage = workflow_object.get_active_stage()
         assert active_stage.status == Stage.ACTIVE_STATUS
 
     def test_mark_stage_as_completed(self):
-        workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
+        workflow_object = Workflow.from_json(workflow_json=self.get_sample_workflow_instance())
         current_active_stage = workflow_object.get_active_stage()
         workflow_object.mark_stage_as_completed(stage=current_active_stage)
         next_active_stage = workflow_object.get_active_stage()
@@ -131,7 +54,7 @@ class TestWorkflow(TestCase):
         assert next_next_active_stage is None
 
     def test_find_and_schedule_tasks(self):
-        workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
+        workflow_object = Workflow.from_json(workflow_json=self.get_sample_workflow_instance())
 
         workflow_object.find_and_schedule_tasks()
         active_stage = workflow_object.get_active_stage()
