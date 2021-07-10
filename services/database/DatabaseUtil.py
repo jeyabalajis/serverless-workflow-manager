@@ -1,12 +1,13 @@
 import json
 import logging
 
-import constants
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from core.db_cache import DatabaseCache
-from core.secrets_manager import SecretsManager
+from services.config.ConfigManager import ConfigManager
+from services.config.EnvUtil import EnvUtil
+from services.database.db_cache import DatabaseCache
+from services.secrets.secrets_manager import SecretsManager
 
 __logger = logging.getLogger(__name__)
 
@@ -27,9 +28,13 @@ class DatabaseUtil:
         if db_handle is not None:
             return db_handle
 
+        env = EnvUtil().get_env()
+
+        config_manager = ConfigManager(environment=env)
+
         # Connect to DB and get database handle, if cache not available.        
         secrets_manager: SecretsManager = SecretsManager(aws_profile_name=self.aws_profile_name)
-        db_secrets = secrets_manager.get_secret(secret_name=constants.DB_SECRET_NAME)
+        db_secrets = secrets_manager.get_secret(secret_name=config_manager.get_config("db_credentials_id"))
         db_secrets = json.loads(db_secrets)
 
         db_uri = db_secrets["db_url"] + "/" + self.db_name
