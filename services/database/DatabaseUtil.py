@@ -7,7 +7,7 @@ from pymongo.database import Database
 from services.config.ConfigManager import ConfigManager
 from services.config.EnvUtil import EnvUtil
 from services.database.DatabaseCache import DatabaseCache
-from services.secrets.secrets_manager import SecretsManager
+from services.secrets.SecretsManager import SecretsManager
 
 __logger = logging.getLogger(__name__)
 

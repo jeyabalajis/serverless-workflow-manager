@@ -3,7 +3,7 @@ import logging
 from entity.StartWorkflowEvent import StartWorkflowEvent
 from entity.Task import Task
 from entity.TaskEvent import TaskEvent
-from services.events.EventManager import EventManager
+from services.events.EventUtil import EventManager
 from services.workflow.WorkflowManager import WorkflowManager
 
 logging.basicConfig(level=logging.INFO)
