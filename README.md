@@ -296,7 +296,7 @@ The workflow manager listens to a specific queue onto which other components com
 {
     "business_ref_no": "ORDER-001",
     "component_name": "ITALIAN",
-    "event_name": "TaskFailed",
+    "event_name": "TaskPending",
     "stage_name": "ORDER",
     "task_name": "confirm_order",
     "task_type": "SERVICE"

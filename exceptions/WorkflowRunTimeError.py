@@ -1,2 +1,2 @@
-class WorkflowValueError(Exception):
+class WorkflowRunTimeError(Exception):
     pass

@@ -133,7 +133,7 @@ class TestWorkflow(TestCase):
     def test_find_and_schedule_tasks(self):
         workflow_object = Workflow.from_json(workflow_json=self.test_workflow())
 
-        workflow_object.find_and_schedule_tasks()
+        workflow_object.__find_and_schedule_tasks()
         active_stage = workflow_object.get_active_stage()
         pending_tasks = active_stage.get_pending_tasks()
         assert pending_tasks is not None and len(pending_tasks) == 1
@@ -142,7 +142,7 @@ class TestWorkflow(TestCase):
         for task in scheduled_tasks:
             workflow_object.mark_task_as_completed(stage=active_stage, task=task)
 
-        workflow_object.find_and_schedule_tasks()
+        workflow_object.__find_and_schedule_tasks()
         active_stage = workflow_object.get_active_stage()
         pending_tasks = active_stage.get_pending_tasks()
         scheduled_tasks = active_stage.get_scheduled_tasks()
