@@ -1,8 +1,7 @@
 import configparser
-import os
 import inspect
 import logging
-
+import os
 
 global __config
 __config = configparser.ConfigParser()
