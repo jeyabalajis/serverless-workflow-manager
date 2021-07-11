@@ -9,7 +9,8 @@ from services.config.env_util import EnvUtil
 from services.database.db_cache import DatabaseCache
 from services.secrets.secrets_manager import SecretsManager
 
-__logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class DatabaseUtil:
@@ -41,6 +42,8 @@ class DatabaseUtil:
         db_uri = db_secrets["db_url"] + "/" + self.db_name
         db_username = db_secrets["user_name"]
         db_pwd = db_secrets["password"]
+
+        logger.info("db_name: {} uri: {}".format(self.db_name, db_uri))
 
         client = MongoClient(db_uri, username=db_username, password=db_pwd)
         db = client[self.db_name]

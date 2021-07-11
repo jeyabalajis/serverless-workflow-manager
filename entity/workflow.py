@@ -4,6 +4,11 @@ from entity.stage import Stage
 from entity.task import Task
 from exceptions.workflow_type_error import WorkflowTypeError
 from exceptions.workflow_value_error import WorkflowValueError
+import logging
+import json
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Workflow:
@@ -52,7 +57,7 @@ class Workflow:
         self.business_ref_no = business_ref_no
 
     def get_dict(self):
-        return self.__dict__
+        return json.loads(json.dumps(self, default=lambda o: o.__dict__))
 
     def __validate_stages_type(self):
         for stage in self.stages:

@@ -13,6 +13,13 @@ class WorkflowManager:
         self.event = event
 
     def start_workflow(self):
+        """
+        start_workflow performs the following:
+        1. find a workflow template based on the component name sent in the event.
+        2. Create a workflow instance based on the template
+        3. Find and schedule tasks
+        :return:
+        """
         workflow: Workflow = WorkflowDefinitionRepository.find_one_by_component_name(
             component_name=self.event.component_name
         )

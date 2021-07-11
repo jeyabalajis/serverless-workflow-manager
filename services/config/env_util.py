@@ -1,6 +1,10 @@
 import os
 
 from services.config.config_manager import ConfigManager
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class EnvUtil:
@@ -13,6 +17,8 @@ class EnvUtil:
     @classmethod
     def get_env(cls):
         env_name = os.environ.get('env')
+
+        logger.info("env name: {}".format(env_name))
 
         if not env_name:
             env_name = 'prod'

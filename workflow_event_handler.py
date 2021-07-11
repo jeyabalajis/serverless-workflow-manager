@@ -13,13 +13,13 @@ logger.setLevel(logging.INFO)
 
 def process_messages(event, context=None):
     """
-
+    process_messages is invoked by a serverless component based on an event.
+    Here we have handled SQS events triggering this function.
+    Based on the type of event, this function either starts a workflow or updates a task.
     :param event:
     :param context:
     :return:
     """
-
-    logger.info("event: {} context: {}".format(str(event), str(context)))
 
     event_manager = EventManager(event_dict=event, event_type=EventManager.SQS_EVENT_TYPE)
 

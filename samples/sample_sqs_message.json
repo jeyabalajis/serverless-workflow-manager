@@ -1,0 +1,11 @@
+{
+  "Records": [
+    {
+      "body": {
+        "business_ref_no": "ORDER-001",
+        "component_name": "ITALIAN",
+        "event_name": "StartWorkflow"
+      }
+    }
+  ]
+}

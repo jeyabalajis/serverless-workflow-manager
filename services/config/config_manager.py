@@ -3,6 +3,9 @@ import logging
 
 from exceptions.workflow_run_time_error import WorkflowRunTimeError
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class ConfigManager:
     def __init__(self, environment: str):
@@ -35,6 +38,7 @@ class ConfigManager:
         :param key:
         :return:
         """
+        logger.info("env: {} key: {}".format(self.environment, key))
 
         if (
                 self.__config.has_section(self.environment)

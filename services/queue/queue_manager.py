@@ -6,6 +6,10 @@ import boto3
 
 from services.config.config_manager import ConfigManager
 from services.config.env_util import EnvUtil
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class QueueManager:
@@ -14,8 +18,11 @@ class QueueManager:
     def __init__(self, *, queue_name: str):
         env = EnvUtil().get_env()
         config_manager = ConfigManager(environment=env)
+
         region_name = config_manager.get_config("region_name")
         profile_name = config_manager.get_config("profile_name")
+
+        logger.info("env {} region: {} profile: {}".format(env, region_name, profile_name))
 
         # Create a SQS client. For local executions, use a specific named aws configuration profile
         # When executed through Lambda, use default profile

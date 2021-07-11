@@ -7,6 +7,11 @@ from services.config.config_manager import ConfigManager
 from services.config.env_util import EnvUtil
 from services.database.db_util import DatabaseUtil
 from services.utils.dict_util import DictUtil
+import logging
+import json
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class WorkflowInstanceRepository:

@@ -26,7 +26,7 @@ class EventManager:
         for event_record in self.event_dict.get("Records"):
             assert "body" in event_record and event_record["body"] is not None
 
-            message = json.loads(event_record["body"])
+            message = event_record["body"]
             assert "event_name" in message
 
     def get_events(self) -> [Event]:
@@ -39,7 +39,7 @@ class EventManager:
 
         event_objects = []
         for event_record in event_records:
-            message = json.loads(event_record["body"])
+            message = event_record["body"]
 
             event_objects.append(self.__get_event(message=message))
 
