@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from typing import Dict
 
@@ -6,7 +7,6 @@ import boto3
 
 from services.config.config_manager import ConfigManager
 from services.config.env_util import EnvUtil
-import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,3 +41,10 @@ class QueueManager:
         response = self.queue.send_message(MessageBody=message_body)
         if response and isinstance(response, Dict):
             return response.get("MessageId")
+
+    def receive_message(self, max_no_of_messages: int = 10, wait_time_seconds: int = 10):
+
+        return self.queue.receive_message(
+            number_messages=max_no_of_messages,
+            wait_time_seconds=wait_time_seconds
+        )
