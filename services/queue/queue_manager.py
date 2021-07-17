@@ -42,9 +42,13 @@ class QueueManager:
         if response and isinstance(response, Dict):
             return response.get("MessageId")
 
-    def receive_message(self, max_no_of_messages: int = 10, wait_time_seconds: int = 10):
+    def receive_messages(self, max_no_of_messages: int = 1, wait_time_seconds: int = 10):
 
-        return self.queue.receive_message(
-            number_messages=max_no_of_messages,
-            wait_time_seconds=wait_time_seconds
+        return self.queue.receive_messages(
+            MaxNumberOfMessages=max_no_of_messages,
+            WaitTimeSeconds=wait_time_seconds
         )
+
+    @classmethod
+    def delete_message(cls, message):
+        message.delete()

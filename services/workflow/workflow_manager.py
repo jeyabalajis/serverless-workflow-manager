@@ -6,6 +6,10 @@ from entity.event import Event
 from entity.task_event import TaskEvent
 from entity.workflow import Workflow
 from services.queue.queue_manager import QueueManager
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class WorkflowManager:
