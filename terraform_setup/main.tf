@@ -21,5 +21,5 @@ provider "aws" {
 }
 
 resource "aws_ecr_repository" "demo-app-repository" {
-  name = var.aws_resource_prefix
+  name = var.aws_resource_name_prefix
 }
