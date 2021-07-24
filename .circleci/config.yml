@@ -9,6 +9,7 @@ jobs:
     working_directory: ~/simple-serverless-rule-engine
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           command: |
             sudo pip install pipenv
