@@ -20,6 +20,10 @@ provider "aws" {
   region  = "ap-south-1"
 }
 
+locals {
+  aws_ecr_repository_name = var.aws_resource_name_prefix
+}
+
 resource "aws_ecr_repository" "demo-app-repository" {
-  name = var.aws_resource_name_prefix
+  name = local.aws_ecr_repository_name
 }
