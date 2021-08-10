@@ -1,10 +1,5 @@
 terraform {
-  backend "remote" {
-    organization = "jeyasandbox"
-    workspaces {
-      name = "serverless-workflow-manager"
-    }
-  }
+  backend "local" {}
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -22,6 +17,11 @@ provider "aws" {
 
 locals {
   aws_ecr_repository_name = var.aws_resource_name_prefix
+  aws_vpc_stack_name = "${var.aws_resource_name_prefix}-vpc-stack"
+  aws_ecs_service_stack_name = "${var.aws_resource_name_prefix}-svc-stack"
+  aws_ecs_cluster_name = "${var.aws_resource_name_prefix}-cluster"
+  aws_ecs_service_name = "${var.aws_resource_name_prefix}-service"
+  aws_ecs_execution_role_name = "${var.aws_resource_name_prefix}-ecs-execution-role"
 }
 
 resource "aws_ecr_repository" "demo-app-repository" {

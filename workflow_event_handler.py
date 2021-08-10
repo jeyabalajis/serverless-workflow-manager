@@ -28,6 +28,8 @@ def process_messages(event, context=None):
     if events is None:
         logger.info("no event is sent")
 
+    logger.info("context: {}".format(str(context)))
+
     for event in events:
         if isinstance(event, StartWorkflowEvent):
             WorkflowManager(event=event).start_workflow()

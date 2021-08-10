@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless Workflow Manager
+Resources:
+  ServerlessWorkflowManagerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: process_sqs_event.lambda_handler
+      Runtime: python3.7
+      Events:
+        MySQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt workflow_queue.Arn
+            BatchSize: 10
+  workflow_queue:
+    Type: AWS::SQS::Queue
