@@ -18,6 +18,7 @@ jobs:
           command: |
             pipenv run pytest
   deploy:
+    executor: serverless/default
     steps:
       - checkout
       - aws-cli/setup
