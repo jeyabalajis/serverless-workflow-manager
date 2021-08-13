@@ -10,4 +10,4 @@ def lambda_handler(event, context):
             payload = record["body"]
             print(str(payload))
 
-        process_messages(event)
+    process_messages(event)
