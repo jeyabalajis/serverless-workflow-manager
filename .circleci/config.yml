@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@0.1.4
+  aws-cli: circleci/aws-cli@2.0
   serverless: circleci/serverless-framework@1.0.1
 jobs:
   build:
@@ -18,7 +18,6 @@ jobs:
           command: |
             pipenv run pytest
   deploy:
-    executor: serverless/default
     steps:
       - checkout
       - aws-cli/setup
