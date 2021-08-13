@@ -74,7 +74,7 @@ typed-ast==1.4.3
 typing-extensions==3.10.0.0
 tzlocal==2.1
 Unidecode==1.0.23
-urllib3==1.24.3
+urllib3==1.26.5
 watchdog==2.1.2
 wcwidth==0.1.7
 websocket-client==1.2.0
