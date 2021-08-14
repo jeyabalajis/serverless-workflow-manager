@@ -1,4 +1,3 @@
-org: jeyabalajis
 app: serverless-workflow-manager
 service: serverless-workflow-manager
 frameworkVersion: '2'
