@@ -28,7 +28,7 @@ jobs:
           command: serverless plugin install -n serverless-lift
           name: liftinstall
       - run:
-          command: serverless deploy -v
+          command: serverless deploy --verbose
           name: deploy
 workflows:
   build_and_deploy:

@@ -3,6 +3,7 @@ service: serverless-workflow-manager
 frameworkVersion: '2'
 provider:
   name: aws
+  region: ap-south-1
   runtime: python3.7
   lambdaHashingVersion: '20201221'
   stage: dev
