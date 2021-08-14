@@ -8,6 +8,8 @@ __pycache__/
 
 .aws-sam
 
+node_modules/
+
 # Distribution / packaging
 .Python
 build/

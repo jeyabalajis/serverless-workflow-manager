@@ -1,0 +1,16 @@
+org: jeyabalajis
+app: serverless-workflow-manager
+service: serverless-workflow-manager
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: python3.7
+  lambdaHashingVersion: '20201221'
+  stage: dev
+functions:
+  producer:
+    handler: process_sqs_event.lambda_handler
+    events:
+      - sqs: arn:aws:sqs:ap-south-1:584566845197:workflow_queue
+plugins:
+  - serverless-lift
