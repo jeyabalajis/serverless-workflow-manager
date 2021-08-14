@@ -26,6 +26,9 @@ jobs:
           app-name: serverless-framework-orb
           org-name: circleci
       - run:
+          command: serverless plugin install -n serverless-lift
+          name: liftinstall
+      - run:
           command: serverless deploy -v
           name: deploy
 workflows:
@@ -33,3 +36,5 @@ workflows:
     jobs:
       - build
       - deploy
+        requires:
+          - build
