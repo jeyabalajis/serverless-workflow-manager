@@ -12,11 +12,10 @@ jobs:
       - setup_remote_docker
       - run:
           command: |
-            sudo pip install pipenv
-            pipenv install
+            sudo pip install -r requirements.txt
       - run:
           command: |
-            pipenv run pytest
+            pytest
   deploy:
     executor: serverless/default
     steps:
