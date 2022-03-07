@@ -3,31 +3,12 @@ A **lightweight** yet **powerful**, _event driven_ workflow orchestration manage
 
 It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                                    
                                                
-# Introduction
-Micro-services are key building blocks of a cloud native, scalable distributed application. They are, by definition, 
-independent cohesive components that execute _a small but an independent_ part of a larger whole. 
-
-However, from a business perspective, there is a single business goal that has to be accomplished irrespective of the 
-number of micro - services employed under the hood or how they are deployed.
-
-Consider the example of fulfilling a food order. There are a number of complex micro services under the hood interacting
-with each other, coupled with human interactions. But the singular business objective in this case is to deliver the food on time.  
-
-> A work-queue based scheduler agent supervisor pattern (https://docs.microsoft.com/en-us/azure/architecture/patterns/scheduler-agent-supervisor) 
-is a robust way to __coordinate__ a series of distributed actions as a __single operation__.
-
-_Serverless Workflow Manager_ is an implementation of this pattern.
-
 # Key Features
-1. Ability to *declaratively* author business workflows for distributed micro-services.
-    - The authoring template also allows you to visualize the current state of the workflow in the front-end, thus providing an excellent way to monitor and control the flow.
+1. Ability to *declaratively* author business workflows for distributed micro-services, including Human in the loop approvals.
 2. Enables modeling of any complex inter-service dependency with ease, with an additional benefit of providing versioning and audit trail.
 3. All the events processed are persisted in a separate collection, making the entire workflow **observable** and **auditable**.  
 4. Ability to __replay__ events for a specific stage or task multiple times when required. I.e. the workflow can be __resumed__ at any point in time.
 5. Uses AWS Simple Queue Service (Amazon SQS), a fully managed message queuing service that makes it easy to decouple and scale micro-services.
-7. The workflow manager is server less! - perfect for hosting and scaling it as an independent micro-service. The scheduler __does not__ become a 
-single point of failure with this approach.
-8. Written in Python 3.6 with minimal requirements. Uses MongoDB as a database backing service. 
 
 # Underlying Concepts
 
@@ -341,7 +322,7 @@ The workflow manager listens to a specific queue onto which other components com
 
 ## Database
 
-1. Due to the inherent stateless nature of AWS Lambda service, there is no guarantee that the Lambda preserves database connections across different invocations.
+1. Due to the inherent stateless nature of AWS Lambda service, there is no guarantee that the Lambda preserves database connections across different invocations. You may want to consider deplying workflow manager under _Elastic Container Service (Fargate)_ if you are looking at having _one instance always available_, with options for auto-scaling.
 2. Ensure that the workflow manager deployed as a lambda uses only a specific number of **reserved concurrency** under AWS Lambda console, depending on the size of the MongoDB instance.
 3. Ensure that unique index is created on business_ref_no, stages.stage_name and tasks.task_name on workflow instance collection for optimal performance.
 4. You may want to purge old workflow instances as the size grows.
