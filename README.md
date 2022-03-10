@@ -1,5 +1,5 @@
 # Serverless Workflow Manager
-A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services.
+A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services. Built based on [orchestration-based saga pattern](https://microservices.io/patterns/data/saga.html).
 
 It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                                    
                                                
