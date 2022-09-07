@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from entity.task import Task
+from domain.task import Task
 from exceptions.workflow_type_error import WorkflowTypeError
 from exceptions.workflow_value_error import WorkflowValueError
 from services.utils.string_util import StringUtil

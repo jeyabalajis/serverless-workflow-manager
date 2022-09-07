@@ -5,20 +5,20 @@ from botocore.exceptions import ClientError
 
 from exceptions.workflow_run_time_error import WorkflowRunTimeError
 from services.config.env_util import EnvUtil
+from services.secrets.abstract_secrets_manager import SecretsManager
 
 
-class SecretsManager:
+class AwsSecretsManager(SecretsManager):
     SERVICE_NAME = 'secretsmanager'
-    REGION_NAME = 'ap-south-1'
 
-    def __init__(self, *, aws_profile_name: str = None):
-        self.aws_profile_name = aws_profile_name
+    def __init__(self, *, profile_name: str = None, region: str = "ap-south-1"):
+        super().__init__(profile_name=profile_name, region=region)
         self.client = None
         self.__init_client_session()
 
     def __init_client_session(self):
-        if self.aws_profile_name is not None:
-            aws_profile_name = self.aws_profile_name
+        if self.profile_name is not None:
+            aws_profile_name = self.profile_name
         else:
             aws_profile_name = EnvUtil.get_aws_profile_name()
 
@@ -31,10 +31,11 @@ class SecretsManager:
 
         self.client = session.client(
             service_name=self.SERVICE_NAME,
-            region_name=self.REGION_NAME
+            region_name=self.region
         )
 
     def get_secret(self, *, secret_name: str):
+        super(AwsSecretsManager, self).get_secret(secret_name=secret_name)
         try:
             get_secret_value_response = self.client.get_secret_value(
                 SecretId=secret_name

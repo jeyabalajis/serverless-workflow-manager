@@ -1,6 +1,6 @@
 from typing import Dict
 
-from entity.event import Event
+from domain.event import Event
 
 
 class StartWorkflowEvent(Event):

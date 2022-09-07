@@ -1,13 +1,13 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from services.queue.queue_manager import QueueManager
+from services.queue.aws_sqs_queue_manager import AwsSqsQueueManager
 
 
 class TestQueueManager(TestCase):
     def test_send_message(self):
-        with patch.object(QueueManager, '__init__', return_value=None):
-            with patch.object(QueueManager, 'send_message', return_value="123") as mock_method:
-                my_queue_manager = QueueManager(queue_name="test_queue")
-                my_queue_manager.send_message({"name": "test"})
-            mock_method.assert_called_once_with({"name": "test"})
+        with patch.object(AwsSqsQueueManager, '__init__', return_value=None):
+            with patch.object(AwsSqsQueueManager, 'send_message', return_value="123") as mock_method:
+                my_queue_manager = AwsSqsQueueManager(profile_name="test", region="ap-south-1")
+                my_queue_manager.send_message(queue_name="test_queue", message_body={"name": "test"})
+            mock_method.assert_called_once_with(queue_name="test_queue", message_body={"name": "test"})

@@ -1,15 +1,15 @@
 import json
 from unittest import TestCase
 
-from entity.stage import Stage
-from entity.workflow import Workflow
+from domain.stage import Stage
+from domain.workflow import Workflow
 
 
 class TestWorkflow(TestCase):
 
     @classmethod
     def get_sample_workflow_instance(cls):
-        with open("./samples/sample_workflow_instance.json") as workflow_instance_file:
+        with open("samples/sample_workflow_instance.json") as workflow_instance_file:
             return json.load(workflow_instance_file)
 
     def test_all_dependencies_completed_false(self):

@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from entity.task import Task
+from domain.task import Task
 
 
 class TestTask(TestCase):

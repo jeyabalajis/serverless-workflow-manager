@@ -1,7 +1,7 @@
 from typing import Dict
 
-from entity.event import Event
-from entity.task import Task
+from domain.event import Event
+from domain.task import Task
 from exceptions.workflow_value_error import WorkflowValueError
 
 

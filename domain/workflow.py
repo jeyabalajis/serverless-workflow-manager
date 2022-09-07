@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
-from entity.stage import Stage
-from entity.task import Task
+from domain.stage import Stage
+from domain.task import Task
 from exceptions.workflow_type_error import WorkflowTypeError
 from exceptions.workflow_value_error import WorkflowValueError
 import logging

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from entity.stage import Stage
+from domain.stage import Stage
 
 
 class TestStage(TestCase):
