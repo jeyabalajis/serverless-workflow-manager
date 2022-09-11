@@ -1,6 +1,6 @@
 # Serverless Workflow Manager
 
-A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services. The workflow manager is built using [hexagonal architecture](https://beyondxscratch.com/2017/08/19/hexagonal-architecture-the-practical-guide-for-a-clean-architecture/). 
+A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services. The workflow manager is built using [hexagonal architecture](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749)).
 
 It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                                    
                                                
