@@ -1,5 +1,5 @@
 app: serverless-workflow-manager
-service: serverless-workflow-manager
+service: serverless-workflow-manager-v2
 provider:
   name: aws
   region: ap-south-1
