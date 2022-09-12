@@ -2,7 +2,11 @@
 
 A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services. The workflow manager is built using [hexagonal architecture](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749)).
 
-It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                                    
+It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                    
+
+# Build Status
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeyabalajis/serverless-workflow-manager/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeyabalajis/serverless-workflow-manager/tree/master)
                                                
 # Key Features
 1. Ability to *declaratively* author business workflows for distributed micro-services, including Human in the loop approvals.
