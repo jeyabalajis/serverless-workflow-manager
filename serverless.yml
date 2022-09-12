@@ -4,7 +4,7 @@ provider:
   name: aws
   region: ap-south-1
   runtime: python3.7
-  lambdaHashingVersion: '20201221'
+  lambdaHashingVersion: '20220912'
   stage: dev
 functions:
   producer:
