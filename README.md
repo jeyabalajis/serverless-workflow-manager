@@ -4,6 +4,8 @@ A **lightweight** yet **powerful**, _event driven_ workflow orchestration manage
 
 It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                    
 
+[![CodeFactor](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/badge/master)](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/overview/master)
+
 # Build Status
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeyabalajis/serverless-workflow-manager/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeyabalajis/serverless-workflow-manager/tree/master)
