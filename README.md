@@ -2,7 +2,9 @@
 
 A **lightweight** yet **powerful**, _event driven_ workflow orchestration manager for micro-services. The workflow manager is built using [hexagonal architecture](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749)).
 
-It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.                    
+It is fault tolerant, horizontally scalable &amp; deployable as microservice. It has already powered more than a million workflows and has been open sourced under MIT License.
+
+This library was successfully used at [FundsCorner](https://medium.com/fundscornertech) to power a number of business workflows (Online seller loans, Supply Chain Financing and Car Loans).
 
 [![CodeFactor](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/badge/master)](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/overview/master)
 
