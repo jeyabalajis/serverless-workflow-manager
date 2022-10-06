@@ -6,11 +6,8 @@ It is fault tolerant, horizontally scalable &amp; deployable as microservice. It
 
 This library was successfully used at [FundsCorner](https://medium.com/fundscornertech) to power a number of business workflows (Online seller loans, Supply Chain Financing and Car Loans).
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeyabalajis/serverless-workflow-manager/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/jeyabalajis/serverless-workflow-manager/tree/master)
 [![CodeFactor](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/badge/master)](https://www.codefactor.io/repository/github/jeyabalajis/serverless-workflow-manager/overview/master)
-
-# Build Status
-
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeyabalajis/serverless-workflow-manager/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeyabalajis/serverless-workflow-manager/tree/master)
                                                
 # Key Features
 1. Ability to *declaratively* author business workflows for distributed micro-services, including Human in the loop approvals.
